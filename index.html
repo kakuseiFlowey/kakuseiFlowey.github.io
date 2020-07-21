@@ -247,6 +247,9 @@
 					card_cnt[n1][n2]++;
 				}//当たったカードをインクリメント
 
+				document.write("UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%<br>\n");
+				document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
+				//document.write("〇コラボガチャ，コラボカード出現率n倍<br>\n");
 				document.write("【" + nanren + "連カードガチャの結果！】↓↓<br>\n");
 
 				for(i = 0;i < 3;i++){//3段階のレアリティごとに実行
