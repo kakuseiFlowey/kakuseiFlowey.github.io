@@ -9,9 +9,9 @@
 			↓↓ここの数値をいじって，RUNボタンをクリックで実行
 			======================*/
 			var user_rank = 6;//ガチャで解放されてるカードランク，0 = F, 1 = E, 2 = D, 3 = C, 4 = B, 5 = A, 6 = S1～
-			var nanren = 60;//何連か．60なら60連
+			var nanren = 11;//何連か．60なら60連
 			var bairitu = [];
-			bairitu[0] = [2.0, 1.5];//UR, SRの出現倍率
+			bairitu[0] = [15.0, 100.5];//UR, SRの出現倍率
 			bairitu[1] = [1, 1, 1];//常設火, 水, 木属性の出現倍率（0,1,2みたいに整数で頼む）
 			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0];//コラボの出現倍率，左からGG，ミク，SF，リゼロ，殺天，ダンロン，このすば，進撃，猫宮，シュタゲ，Fate，歌舞伎
 			/*======================
@@ -57,6 +57,7 @@
 			}
 
 			var korabo = bairitu[2].length;//GGだけRカードが存在する問題．他コラボは空の配列を置けばいいか．
+			var rank = ["F", "E", "D", "C", "B", "A", "S1~"];
 			var rarity = ["UR", "SR", "R"];
 			var card_rarity = [0, 1, 2];
 			var rarity_rate = [0.01, 0.09, 0.9];
@@ -249,6 +250,7 @@
 
 				document.write("UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%<br>\n");
 				document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
+				document.write("解放カード" + rank[user_rank] + "ランクまで<br>\n");
 				//document.write("〇コラボガチャ，コラボカード出現率n倍<br>\n");
 				document.write("【" + nanren + "連カードガチャの結果！】↓↓<br>\n");
 
