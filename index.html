@@ -25,7 +25,6 @@
 			bairitu[0] = [2.0, 1.5];
 			bairitu[1] = [1, 1, 1];
 			bairitu[2] = [0,0,0,0,0,15,0,0,0,0,0,0];
-
 			例2:---UR15%SR以上確定11連のパラメータ設定例---
 			var user_rank = 6;
 			var nanren = 11;
@@ -33,7 +32,6 @@
 			bairitu[0] = [15.0, 100];//SR以上確定にするにはSR倍率をクソ高くすれば良い．UR確定ならURを100にする
 			bairitu[1] = [1, 1, 1];
 			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0];
-
 			例3:---木属性限定，UR1倍，SR1倍の60連パラメータ設定例---
 			var user_rank = 6;
 			var nanren = 60;
@@ -41,7 +39,6 @@
 			bairitu[0] = [1.0, 1.0];
 			bairitu[1] = [0, 0, 1];
 			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0];
-
 			例4:---水属性出現率2倍，UR2倍，SR1.5倍，ガチャ解放ランクCの35連パラメータ設定例---
 			var user_rank = 3;
 			var nanren = 35;
@@ -248,6 +245,8 @@
 					card_cnt[n1][n2]++;
 				}//当たったカードをインクリメント
 
+				rarity_rate[0] = Math.min(rarity_rate[0], 1);
+				rarity_rate[1] = Math.min(rarity_rate[1], 1 - rarity_rate[0]);
 				document.write("UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%<br>\n");
 				document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
 				document.write("解放カード" + rank[user_rank] + "ランクまで<br>\n");
