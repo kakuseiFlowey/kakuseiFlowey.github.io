@@ -6,7 +6,7 @@
 	<body>
 		<script>
 			/*======================
-			↓↓ここの数値をいじって，RUNボタンをクリックで実行
+			↓↓ここの数値をいじる
 			======================*/
 			var user_rank = 6;//ガチャで解放されてるカードランク，0 = F, 1 = E, 2 = D, 3 = C, 4 = B, 5 = A, 6 = S1～
 			var nanren = 11;//何連か．60なら60連
@@ -15,9 +15,21 @@
 			bairitu[1] = [1, 1, 1];//常設火, 水, 木属性の出現倍率（0,1,2みたいに整数で頼む）
 			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0];//コラボの出現倍率，左からGG，ミク，SF，リゼロ，殺天，ダンロン，このすば，進撃，猫宮，シュタゲ，Fate，歌舞伎
 			/*======================
-			↑↑ここの数値をいじって，RUNボタンをクリックで実行
+			↑↑ここの数値をいじる
 			======================*/
 			/*
+
+			================================================================
+			===これを見てる人向け　自分でパラメータ設定して実行する方法（PC版）===
+			================================================================
+			1. このコードを全て選択してコピーする（「Ctrl + A」で選択して「Ctrl + C」でコピー）
+			2. メモ帳に貼り付け（「Ctrl + V」で貼り付け），パラメータを好きに設定する（下の4例などを参考に）
+			3. 適当な名前を付けて適当なところに保存（例えば「gatya.txt」と名付けてデスクトップに保存）
+			4. ファイルの名前を変更して拡張子を「.html」にする（「gatya.txt」を「gatya.html」に．なんか通知出ても「はい」でおｋ）
+			5. ファイルを右クリックし，「プログラムから開く」からブラウザ（ChromeとかFirefoxとか）を選択
+			6. おめでとう！好きなパラメータでガチャシミュレーションできたね！更新ボタンで何度でも回せるぞ！
+			================================================================
+
 			例1:---ダンロンコラボカード15倍，UR2倍，SR1.5倍の60連パラメータ設定例---
 			var user_rank = 6;
 			var nanren = 60;
@@ -46,6 +58,7 @@
 			bairitu[0] = [2.0, 1.5];
 			bairitu[1] = [1, 2, 1];
 			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0];
+
 			*/
 			function getRandomInt(min, max) {
 			  min = Math.ceil(min);
@@ -54,13 +67,12 @@
 			}
 
 			var korabo = bairitu[2].length;//GGだけRカードが存在する問題．他コラボは空の配列を置けばいいか．
+			var korabo_name = ["ギルティギア", "ボカロ", "ストV", "リゼロ", "殺戮の天使", "ダンガンロンパ", "このすば", "進撃の巨人", "猫宮ひなた", "Steins;Gate", "Fate", "超歌舞伎x千本桜"];
 			var rank = ["F", "E", "D", "C", "B", "A", "S1~"];
 			var rarity = ["UR", "SR", "R"];
-			var card_rarity = [0, 1, 2];
 			var rarity_rate = [0.01, 0.09, 0.9];
-			for(i = 0;i < 2;i++){
-				rarity_rate[i] = rarity_rate[i] * bairitu[0][i];
-			}
+			rarity_rate[0] = Math.min(rarity_rate[0] * bairitu[0][0], 1);
+			rarity_rate[1] = Math.min(rarity_rate[1] * bairitu[0][1], 1 - rarity_rate[0]);
 			rarity_rate[2] = 1.0 - rarity_rate[0] - rarity_rate[1];//使わないけど一応Rの出現率
 
 			var card_name = [3];//カード名のオリジナル配列
@@ -234,9 +246,9 @@
 				for(i = 0;i < nanren;i++){
 					rVal = Math.random();
 					var n1,n2;
-					if(rVal < rarity_rate[0]){
+					if(rVal <= rarity_rate[0]){
 						n1 = 0;//UR
-					}else if(rVal < rarity_rate[0] + rarity_rate[1]){
+					}else if(rVal <= rarity_rate[0] + rarity_rate[1]){
 						n1 = 1;//SR
 					}else{
 						n1 = 2;//R
@@ -245,12 +257,14 @@
 					card_cnt[n1][n2]++;
 				}//当たったカードをインクリメント
 
-				rarity_rate[0] = Math.min(rarity_rate[0], 1);
-				rarity_rate[1] = Math.min(rarity_rate[1], 1 - rarity_rate[0]);
 				document.write("UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%<br>\n");
 				document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
 				document.write("解放カード" + rank[user_rank] + "ランクまで<br>\n");
-				//document.write("〇コラボガチャ，コラボカード出現率n倍<br>\n");
+				for(i = 0;i < korabo_name.length;i++){
+					if(bairitu[2][i] > 0){
+						document.write(korabo_name[i] + "コラボカード出現率" + bairitu[2][i] + "倍<br>\n");
+					}
+				}
 				document.write("【" + nanren + "連カードガチャの結果！】↓↓<br>\n");
 
 				for(i = 0;i < 3;i++){//3段階のレアリティごとに実行
@@ -263,7 +277,7 @@
 					}//ダブったカードの枚数を加算
 					for(j = 0;j < len;j++){
 						if(card_cnt[i][j] > 0){
-							document.write(rarity[card_rarity[i]] + " " + card_hit[i][j] + " x " + card_cnt[i][j] + "<br>\n");
+							document.write(rarity[i] + " " + card_hit[i][j] + " x " + card_cnt[i][j] + "<br>\n");
 						}
 					}//当たったカードレアリティ・カード名・枚数を表示
 				}
