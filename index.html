@@ -9,11 +9,11 @@
 			↓↓ここの数値をいじる
 			======================*/
 			var user_rank = 6;//ガチャで解放されてるカードランク，0 = F, 1 = E, 2 = D, 3 = C, 4 = B, 5 = A, 6 = S1～
-			var nanren = 11;//何連か．60なら60連
+			var nanren = 60;//何連か．60なら60連
 			var bairitu = [];
-			bairitu[0] = [15.0, 100.5];//UR, SRの出現倍率(デフォ1倍，よくあるのは2.0,1.5倍)
+			bairitu[0] = [2.0, 1.5];//UR, SRの出現倍率(デフォ1倍，よくあるのは2.0,1.5倍)
 			bairitu[1] = [1, 1, 1];//常設火, 水, 木属性の出現倍率（0,1,2みたいに整数で頼む）
-			bairitu[2] = [0,0,0,0,0,0,0,0,0,0,0,0,0];//コラボの出現倍率，左からGG，ミク，SF，リゼロ，殺天，ダンロン，このすば，進撃，猫宮，シュタゲ，Fate，歌舞伎，ダンまち
+			bairitu[2] = [1,0,0,0,0,0,0,0,0,0,0,0,0];//コラボの出現倍率，左からGG，ミク，SF，リゼロ，殺天，ダンロン，このすば，進撃，猫宮，シュタゲ，Fate，歌舞伎，ダンまち
 			//↓ピックアップ関連のパラメータ．完全に理解したらいじるべし
 			var is_pickup = 0;//個別ピックアップ(なし，あり) = (0,1)
 			var pickup_rate = 20;//大会優勝チームのピックアップなど，個別にかかる倍率
@@ -75,6 +75,7 @@
 
 			var korabo = bairitu[2].length;//ガチャありコラボの数
 			var korabo_name = ["ギルティギア", "ボカロ", "ストV", "リゼロ", "殺戮の天使", "ダンガンロンパ", "このすば", "進撃の巨人", "猫宮ひなた", "Steins;Gate", "Fate", "超歌舞伎x千本桜", "ダンまち"];
+			var only_korabo = [1,0,0,0,0,0,0,0,0,0,0,0,0];//コラボのみ出現するなら1,常設も出るなら0
 			var rank = ["F", "E", "D", "C", "B", "A", "S1~"];
 			var rarity = ["UR", "SR", "R"];
 			var rarity_rate = [0.01, 0.09, 0.9];
@@ -252,6 +253,13 @@
 				//ガチャ用データ生成ループ
 				for(i = 0;i < 3;i++){//UR,SR,Rを順次追加
 					for(j = 0;j <= korabo + user_rank;j++){//解放ランクまでしか追加しない
+						if(j == korabo){//常設出ないコラボやってるかチェックをここで実施
+							let flag = 0;
+							for(k = 0;k < korabo;k++){
+								flag += bairitu[2][k] * only_korabo[k];
+							}
+							if(flag > 0)break;//常設追加せず終了
+						}
 						let len = card_name[i][j].length;
 						for(k = 0;k < len;k++){
 								if(j < korabo){//コラボガチャなら追加
@@ -259,7 +267,7 @@
 										card_hit[i].push(card_name[i][j][k]);
 										card_cnt[i].push(0);
 										card_idx[i].push(l * (-1));
-									}
+									}	
 								}else{//常設カード追加
 									for(l = 0;l < bairitu[1][card_type[i][j][k]] * card_pick[i][j][k];l++){
 										if(card_pick[i][j][k] > 1){
@@ -291,11 +299,17 @@
 				}
 
 				document.write("UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%<br>\n");
-				document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
+				if(bairitu[1][0] * bairitu[1][1] * bairitu[1][2] != 1){
+					document.write("常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍<br>\n");
+				}
 				document.write("解放カード" + rank[user_rank] + "ランクまで<br>\n");
 				for(i = 0;i < korabo_name.length;i++){
 					if(bairitu[2][i] > 0){
-						document.write(korabo_name[i] + "コラボカード出現率" + bairitu[2][i] + "倍<br>\n");
+						if(only_korabo[i] == 0){
+							document.write(korabo_name[i] + "コラボカード出現率" + bairitu[2][i] + "倍<br>\n");
+						}else{
+							document.write(korabo_name[i] + "コラボカード限定<br>\n");
+						}
 					}
 				}
 				if(is_pickup == 1){
