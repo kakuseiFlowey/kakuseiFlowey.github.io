@@ -1,0 +1,83 @@
+body{
+    font-size: 18px;
+    background-color: #c6fe9f;
+}
+
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+table tr{
+    border-bottom: solid 2px #3c0760;
+    text-align: left;
+}
+
+
+ul{
+    background: #fffff4;
+    border-radius :8px;/*角の丸み*/
+    box-shadow :0px 0px 5px silver;/*5px=影の広がり具合*/
+    padding: 0.5em 0.5em 0.5em 2em
+}
+ul li{
+    line-height: 1.5;
+}
+
+.button_wrapper{
+    width: auto;
+    text-align: left;
+}
+
+.btn{
+    padding: 7px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #3c0760;
+    border-radius: 5px;
+    background: #fff;
+}  
+.btn:hover {
+    color: #fff;
+    /* background: #228b22; */
+    background: #3c0760;
+}
+  
+
+.btnspinner{
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.spinner_area input{
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 18px;
+    width: auto;
+    vertical-align: middle;
+    /* デフォルトのスピナーを消す */
+    -webkit-appearance: none;
+    -moz-appearance:textfield;
+}
+
+.spinner_area input[type="button"]{
+    cursor: pointer;
+}
+
+.form_area{
+    font-size:18px;
+}
+.form_area select{
+    padding: 7px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 18px;
+    width: 240px;
+    vertical-align: middle;
+}
+
+
