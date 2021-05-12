@@ -25,99 +25,99 @@
 				調子乗って当たったカード画像とか表示できるようにしちゃう？→必要だと思ったら&気が向いたら
 				あなたは○○人目の訪問者です的なアクセスカウンタ：やる意味ないけど古き良き時代を思い出すので個人的には好き
 		-->
-		<p>
-			<form name="form1" class="form_area">
-				<table>
-					<tbody>
-						<tr>
-							<th>解放ランク</th>
-							<td>
-								<select name="rankChoice">
-									<option>F</option>
-									<option>~E</option>
-									<option>~D</option>
-									<option>~C</option>
-									<option>~B</option>
-									<option>~A</option>
-									<option selected>~S1</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>コラボ</th>
-							<td>
-								<select name="koraboChoice">
-									<option selected>-</option>
-									<option>ギルティギア</option>
-									<option>ボカロ</option>
-									<option>ストV</option>
-									<option>リゼロ</option>
-									<option>殺戮の天使</option>
-									<option>ダンガンロンパ</option>
-									<option>このすば</option>
-									<option>進撃の巨人</option>
-									<option>猫宮ひなた</option>
-									<option>Steins;Gate</option>
-									<option>Fate</option>
-									<option>超歌舞伎x千本桜</option>
-									<option>ダンまち</option>
-									<option>FFXV</option>
-									<option>文スト</option>
-									<option>ライザ２</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>UR出現率</th>
-							<td>
-								<select name="ursrChoice">
-									<option>UR1倍、SR1倍</option>
-									<option selected>UR2倍、SR1.5倍</option>
-									<option>UR3倍、SR1.5倍</option>
-									<option>UR15%、SR以上確定</option>
-									<option>UR30%（ブラチ仕様）</option>
-									<option>UR確定</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>属性確率</th> <!--コラボ設定すると無効になる-->
-							<td>
-								<select name="typeChoice">
-									<option selected>-</option>
-									<option>火属性限定</option>
-									<option>水属性限定</option>
-									<option>木属性限定</option>
-									<option>火属性2倍</option>
-									<option>水属性2倍</option>
-									<option>木属性2倍</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>他ピックアップ</th>
-							<td>
-								<select name="pickChoice">
-									<option selected>-</option>
-									<option>2021/05/13 甘色モチーフカードピックアップ</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>何連？</th>
-							<td>
-								<div class="spinner_area">
-									<input type="number" value="60" class="counter1" data-max="60" data-min="1" id="nanren">
-									<input type="button" value="＋" class="btnspinner" data-cal="1" data-target=".counter1">
-									<input type="button" value="－" class="btnspinner" data-cal="-1" data-target=".counter1">
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+	
+		<form name="form1" class="form_area">
+			<table>
+				<tbody>
+					<tr>
+						<th>解放ランク</th>
+						<td>
+							<select name="rankChoice">
+								<option>F</option>
+								<option>~E</option>
+								<option>~D</option>
+								<option>~C</option>
+								<option>~B</option>
+								<option>~A</option>
+								<option selected>~S1</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>コラボ</th>
+						<td>
+							<select name="koraboChoice">
+								<option selected>-</option>
+								<option>ギルティギア</option>
+								<option>ボカロ</option>
+								<option>ストV</option>
+								<option>リゼロ</option>
+								<option>殺戮の天使</option>
+								<option>ダンガンロンパ</option>
+								<option>このすば</option>
+								<option>進撃の巨人</option>
+								<option>猫宮ひなた</option>
+								<option>Steins;Gate</option>
+								<option>Fate</option>
+								<option>超歌舞伎x千本桜</option>
+								<option>ダンまち</option>
+								<option>FFXV</option>
+								<option>文スト</option>
+								<option>ライザ２</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>UR出現率</th>
+						<td>
+							<select name="ursrChoice">
+								<option>UR1倍、SR1倍</option>
+								<option selected>UR2倍、SR1.5倍</option>
+								<option>UR3倍、SR1.5倍</option>
+								<option>UR15%、SR以上確定</option>
+								<option>UR30%（ブラチ仕様）</option>
+								<option>UR確定</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>属性確率</th> <!--コラボ設定すると無効になる-->
+						<td>
+							<select name="typeChoice">
+								<option selected>-</option>
+								<option>火属性限定</option>
+								<option>水属性限定</option>
+								<option>木属性限定</option>
+								<option>火属性2倍</option>
+								<option>水属性2倍</option>
+								<option>木属性2倍</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>他ピックアップ</th>
+						<td>
+							<select name="pickChoice">
+								<option selected>-</option>
+								<option>2021/05/13 甘色モチーフカードピックアップ</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>何連？</th>
+						<td>
+							<div class="spinner_area">
+								<input type="number" value="60" class="counter1" data-max="60" data-min="1" id="nanren">
+								<input type="button" value="＋" class="btnspinner" data-cal="1" data-target=".counter1">
+								<input type="button" value="－" class="btnspinner" data-cal="-1" data-target=".counter1">
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
-			</form>
-		</p>
+		</form>
+		
 		<p class="button_wrapper">
 			<button class="btn">ガチャを回す！</button>
 		</p>
@@ -322,7 +322,7 @@
 								}else{//常設カード追加
 									for(l = 0;l < bairitu[1][card_type[i][j][k]] * card_pick[i][j][k];l++){
 										if(card_pick[i][j][k] > 1){
-											card_hit[i].push(card_name[i][j][k] + " 《ピックアップ対象ｷﾀ――(ﾟ∀ﾟ)――!!》");
+											card_hit[i].push(card_name[i][j][k] + "【Pick】");
 										}else{
 											card_hit[i].push(card_name[i][j][k]);
 										}
