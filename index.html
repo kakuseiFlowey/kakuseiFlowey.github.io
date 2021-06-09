@@ -99,7 +99,8 @@
 						<td>
 							<select name="pickChoice">
 								<option selected>-</option>
-								<option>2021/05/13 甘色モチーフカードピックアップ</option>
+								<option>2021/05/13 甘色モチーフ</option>
+								<option>2021/06/10 「ディーバとサンバールから生まれた」使用カード</option>
 							</select>
 						</td>
 					</tr>
@@ -268,8 +269,13 @@
 				}else if(document.form1.pickChoice.selectedIndex == 1){
 					is_pickup = 1;
 					pickup_rate = 20;
-					pickup_name = "甘色モチーフカードピックアップ";
+					pickup_name = "甘色モチーフ";
 					pickup_num = [[0,4,12],[0,5,12],[1,4,13],[1,5,12],[2,4,2]];
+				}else if(document.form1.pickChoice.selectedIndex == 2){
+					is_pickup = 1;
+					pickup_rate = 5;
+					pickup_name = "「ディーバとサンバールから生まれた」使用カード"
+					pickup_num = [[0,3,2],[0,4,5],[0,4,7],[0,4,9],[0,5,8],[0,6,1],[0,6,3],[0,6,9],[0,6,12],[0,6,14],[0,6,17],[0,6,20],[1,4,6]];
 				}
 			}
 
@@ -388,6 +394,17 @@
 				if(is_pickup == 1){
 					new_element = document.createElement('p');
 					new_element.textContent = pickup_name + "【出現率" + pickup_rate +  "倍】";
+					parent.appendChild(new_element);
+					new_element = document.createElement('p');
+					new_element.textContent = "/-------------↓↓対象カード-------------";
+					parent.appendChild(new_element);
+					for(i = 0;i < pickup_num.length;i++){
+						new_element = document.createElement('div');
+						new_element.textContent = card_name[pickup_num[i][0]][korabo + pickup_num[i][1]][pickup_num[i][2]];
+						parent.appendChild(new_element);
+					}
+					new_element = document.createElement('p');
+					new_element.textContent = "-------------対象カード↑↑-------------/";
 					parent.appendChild(new_element);
 				}
 				new_element = document.createElement('p');
@@ -537,7 +554,7 @@
 				[1,2,2,0,0],
 				[2,2]
 				];
-			// コラボカードの属性情報は必要ないため、空配列を挿入
+			// コラボカードの属性情報は必要ないため、空配列を先頭に挿入
 			for(let i = 0;i < korabo;i++){
 				card_type[0].unshift([]);
 				card_type[1].unshift([]);
@@ -567,11 +584,14 @@
 				// [0,4,6],//みみみ
 				// [0,4,7],//緑号令
 				// [0,4,8],//ミローディア
+				// [0,4,9],//始龍（ママミン）
 				// [0,4,11],//プニャトフスキ一族
 				// [0,4,12],//夢色桃色
 				// [0,5,2],//アバカン
 				// [0,5,8],//タイオワ
 				// [0,5,12],//喰色
+				// [0,6,1],//エボリリ
+				// [0,6,3],//シャドウ
 				// [0,6,4],//マジスク
 				// [0,6,6],//ユニドール
 				// [0,6,9],//アンジュ
@@ -580,6 +600,7 @@
 				// [0,6,16],//ワキンヤン
 				// [0,6,17],//ゆらら
 				// [0,6,19],//妻
+				// [0,6,20],//きてる
 				// [1,2,4],//シスコンブラザー		
 				// [1,3,9],//ピッツァハーレム
 				// [1,4,6],//イェーガー
