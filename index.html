@@ -235,19 +235,15 @@
 
 			function func_ursrset(){
 				// UR倍率設定
-				if(document.form1.ursrChoice.selectedIndex == 0){
-					bairitu[0] = [1.0, 1.0];
-				}else if(document.form1.ursrChoice.selectedIndex == 1){
-					bairitu[0] = [2.0, 1.5];
-				}else if(document.form1.ursrChoice.selectedIndex == 2){
-					bairitu[0] = [3.0, 1.5];
-				}else if(document.form1.ursrChoice.selectedIndex == 3){
-					bairitu[0] = [15.0, 100.0];
-				}else if(document.form1.ursrChoice.selectedIndex == 4){
-					bairitu[0] = [30.0, 100.0];
-				}else if(document.form1.ursrChoice.selectedIndex == 5){
-					bairitu[0] = [100.0, 1.0];
-				}
+				let tmpBairituArray = [
+					[1.0, 1.0],
+					[2.0, 1.5],
+					[3.0, 1.5],
+					[15.0, 100.0],
+					[30.0, 100.0],
+					[100.0, 1.0]
+				];
+				bairitu[0] = tmpBairituArray[document.form1.ursrChoice.selectedIndex];
 				rarity_rate = [0.01, 0.09, 0.9];
 				rarity_rate[0] = Math.min(rarity_rate[0] * bairitu[0][0], 1);
 				rarity_rate[1] = Math.min(rarity_rate[1] * bairitu[0][1], 1 - rarity_rate[0]);
@@ -256,21 +252,16 @@
 
 			function func_typeset(){
 				// 属性確率設定
-				if(document.form1.typeChoice.selectedIndex == 0){
-					bairitu[1] = [1, 1, 1];
-				}else if(document.form1.typeChoice.selectedIndex == 1){
-					bairitu[1] = [1, 0, 0];
-				}else if(document.form1.typeChoice.selectedIndex == 2){
-					bairitu[1] = [0, 1, 0];
-				}else if(document.form1.typeChoice.selectedIndex == 3){
-					bairitu[1] = [0, 0, 1];
-				}else if(document.form1.typeChoice.selectedIndex == 4){
-					bairitu[1] = [2, 1, 1];
-				}else if(document.form1.typeChoice.selectedIndex == 5){
-					bairitu[1] = [1, 2, 1];
-				}else if(document.form1.typeChoice.selectedIndex == 6){
-					bairitu[1] = [1, 1, 2];
-				}
+				let tmpBairituArray = [
+					[1, 1, 1],
+					[1, 0, 0],
+					[0, 1, 0],
+					[0, 0, 1],
+					[2, 1, 1],
+					[1, 2, 1],
+					[1, 1, 2]
+				];
+				bairitu[1] = tmpBairituArray[document.form1.typeChoice.selectedIndex];
 			}
 
 			function func_pickset(){
@@ -467,7 +458,7 @@
 				["【FFXV】輝かしき未来へ", "【FFXV】彼の者の物語", "【FFXV】父子の絆"],
 				["【文スト】武装探偵社", "【文スト】ありふれた日常の幸せ", "【文スト】理想という病を愛す", "【文スト】双つの黒"],
 				["【ライザのアトリエ２】いざ！冒険の旅へ！", "【ライザのアトリエ２】夏だ！海だ！水着だ！", "【ライザのアトリエ２】ひと夏の思い出"],
-				["赤前敵移", "青吸防", "緑貫周"],
+				["【ペルソナ５】TAKE YOUR HEART", "【ペルソナ５】運命の囚われ", "【ペルソナ５】心の怪盗団"],
 				// 新コラボカードはここ↑に追加
 				["究極系ノーガード戦法", "ぶじゅつかの超速加速", "楽団長 ドルケストル", "-蒼王宮- 恩寵天使 ソーン=ユーリエフ"],
 				["対消滅ロングレンジライフルHum-Buster", "名門サッカー部 イナズマシュート", "魂を司る聖天使 ガブリエル", "妖炎参謀 月夜叉", "UMEEEEEE!!! ㌍伝道 通信教育カラァーテェ"],
@@ -505,7 +496,7 @@
 				["グラディオラス", "シドニー", "アラネア"],
 				["宮沢賢治", "江戸川乱歩", "与謝野晶子", "福沢諭吉"],
 				["レント・マルスリンク", "パトリツィア・アーベルハイム", "セリ・グロース"],
-				["青毒近", "赤弱", "緑癒"],
+				["フォックス", "クイーン", "ノワール"],
 				// 新コラボカードはここ↑に追加
 				["操宴軍馬 べディーネン・パンツァー", "一撃必殺 ブラストアッパー", "楽団員 サンバール"],
 				["焼却ロボ Fladoll-4649", "ひめたる力の覚醒", "聖女の守り手 黒猫リリィ", "楽団員 アルプ", "-蒼王宮- 白翼騎士 ジェニト", "樹霊の加護 イシュティニケ"],
