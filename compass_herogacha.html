@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ヒーローガチャシミュレータ</title>
+		<link rel="stylesheet" href="./compass_gacha.css">
+	</head>
+	<body>
+		<form name="form1" class="form_area">
+			<table>
+				<tbody>
+					<tr>
+						<th>何のガチャか</th>
+						<td>
+							<select name="koraboChoice">
+								<option value="0" selected>オリジナル</option>
+								<option value="-7">2021ハロウィン</option>
+								<option value="-6">2019&2020ハロウィン</option>
+								<option value="-5">2017&2018ハロウィン</option>
+								<option value="-4">2021水着</option>
+								<option value="-3">2020水着</option>
+								<option value="-2">2019水着</option>
+								<option value="-1">2017&2018水着</option>
+								<option value="18">オーバーロード</option>
+								<option value="17">ペルソナ５</option>
+								<option value="15">文スト</option>
+								<option value="14">FF</option>
+								<option value="10">Steins;Gate</option>
+								<option value="4">リゼロ</option>
+								<option value="3">SFV</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>ピックアップ（オリジナル以外無効）</th>
+						<td>
+							<select name="pickupChoice">
+								<option value="0">なし</option>
+								<option value="32">イグニス出現率5倍</option>
+								<option value="33" selected>輪廻出現率5倍</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>チケット枚数</th>
+						<td>
+							<div class="spinner_area">
+								<input type="number" id="nanren" value="1">
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+
+		<p class="button_wrapper">
+			<button class="btn">ガチャを回す</button>
+		</p>
+		<details>
+			<summary>該当ヒーロー一覧</summary>
+			<ul id="info">
+				<!-- ここにガチャ詳細情報を表示 -->
+			</ul>
+		</details>
+		<h3>--ガチャ結果↓--</h3>
+		<ul id="results">
+			<!-- ここに子要素を追加して結果表示 -->
+		</ul>
+		<script>
+			// DOM
+			var dom1 = document.querySelector("button");
+			// イベント
+			dom1.addEventListener("click", func_set);
+
+			// オリジナルヒーローの当選配列とかリセット
+			// 確率の合計が厳密には1.0にならないので、本当なら例外処理入れるなりしたい。
+			// 0.001をkoraboRate[0][orgHeroNum - 1]に足して確実に100超す方針で。ヒーローが1000体以下ならこれで確実に100.0%を超える
+			function set_rate(){
+				koraboRate[0].splice(0);
+				if(is_pickup == 0){
+					for(i = 0;i < orgHeroNum;i++){
+						koraboRate[0].push(1.0 / orgHeroNum);
+					}
+				} else if(is_pickup == 1) {
+					for(i = 0;i < orgHeroNum;i++){
+						if(i == pickup_hero_num){
+							koraboRate[0].push(pickup_rate * 1.0 / (orgHeroNum + pickup_rate - 1));
+						} else {
+							koraboRate[0].push(1.0 / (orgHeroNum + pickup_rate - 1));
+						}
+					}
+				}
+				// 0.001を足して、乱数0.0~1.0の範囲を完全にカバー
+				koraboRate[0][orgHeroNum - 1] += 0.001;
+				return;
+			}
+
+			function func_set(){
+				koraboWhat = document.form1.koraboChoice.value;
+				if (koraboWhat < 0)
+				{
+					koraboWhat = korabo_name.length - koraboWhat - 1;
+				}
+
+				//ピックアップチェック
+				if(document.form1.pickupChoice.value == 0){
+					is_pickup = 0;
+				} else {
+					is_pickup = 1;
+					pickup_hero_num = document.form1.pickupChoice.value;
+				}
+				set_rate();
+
+				//該当ヒーロー一覧書き出し
+				let parent = document.getElementById("info");
+				while(parent.firstChild){//既に書き出した子要素を全部削除
+					parent.removeChild(parent.firstChild);
+				}
+
+				new_element = document.createElement('p');
+				new_element.textContent = gacha_name[koraboWhat] + "ガチャでは次のヒーローが当選します";
+				parent.appendChild(new_element);//ガチャ種類
+
+				let looplen = hitHero[koraboWhat].length;
+				for(i = 0;i < looplen;i++){
+					new_element = document.createElement('li');
+					new_element.textContent = heroName[0][hitHero[koraboWhat][i]] + " :" + (100 * koraboRate[koraboWhat][i]) + "%";
+					parent.appendChild(new_element);
+				}
+
+				//当選ヒーロー書き出し
+				let parent2 = document.getElementById("results");
+				while(parent2.firstChild){//既に書き出した子要素を全部削除
+					parent2.removeChild(parent2.firstChild);
+				}
+
+				nanren = document.getElementById("nanren").value;
+				// document.write(gacha_name[koraboWhat] + "ヒーローガチャシミュレータ<br>\n");
+				// if(is_pickup == 1){
+				// 	document.write("「" + heroName[0][pickup_hero_num] + "」出現率" + pickup_rate + "倍！<br>\n");
+				// }
+				do{
+					let looplen = hitHero[koraboWhat].length;
+					let tmpRate = 0;
+					var rVal = Math.random();
+					for(i = 0;i < looplen;i++){
+						tmpRate += koraboRate[koraboWhat][i];
+						if(rVal <= tmpRate){
+							new_element = document.createElement('li');
+							new_element.textContent = heroName[0][hitHero[koraboWhat][i]];
+							if(is_pickup == 1 && heroName[0][hitHero[koraboWhat][i]] == heroName[0][pickup_hero_num]){
+								new_element.textContent += "【ピックアップ対象】";
+							}
+							parent2.appendChild(new_element);
+							break;
+						}
+					}
+				}while(--nanren > 0);
+
+			}
+			//↓変数たち
+			var korabo_name = [ "オリジナル", "ギルティギア", "ボカロ", "SFV", "リゼロ", 
+								"殺戮の天使", "ダンガンロンパ", "このすば", "進撃の巨人", "猫宮ひなた",
+								"Steins;Gate", "Fate", "超歌舞伎x千本桜", "ダンまち", "FF",
+								"文スト", "ライザ２", "ペルソナ５", "オーバーロード",
+							  ];
+			var event_name = [  "2017&2018水着", "2019水着", "2020水着", "2021水着", "2017&2018ハロウィン",
+								"2019&2020ハロウィン", "2021ハロウィン",
+							 ];
+			var gacha_name = korabo_name.concat(event_name);
+			var koraboWhat;//何のコラボか.15は文スト
+			var heroName = [
+				[
+					"十文字 アタリ", "ジャスティス ハンコック", "リリカ", "双挽 乃保", "桜華 忠臣",
+				 	"ジャンヌ ダルク", "マルコス'55", "ルチアーノ", "Voidoll", "深川 まとい", 
+				 	"グスタフ ハイドリヒ", "ニコラ テスラ", "ヴィオレッタ ノワール", "コクリコット ブランシュ", "マリア=S=レオンブルク",
+				 	"アダム=ユーリエフ", "13 †サーティーン†", "かけだし勇者", "メグメグ", "イスタカ",
+				 	"輝龍院 きらら", "ヴィーナス ポロロッチョ", "ソーン=ユーリエフ", "デビルミント鬼龍 デルミン", "トマス",
+				 	"零夜", "ルルカ", "ピエール 77世", "狐ヶ咲甘色", "ニーズヘッグ",
+				 	"ゲームバズーカガール", "青春 アリス", "イグニス", "糸廻 輪廻",
+				],
+				[
+					"ソル=バッドガイ", "ディズィー", "初音 ミク", "リュウ", "春麗",
+					"エミリア", "レム", "カイ=キスク", "鏡音 リン", "鏡音 レン",
+					"ザック＆レイチェル", "モノクマ", "アクア", "めぐみん", "リヴァイ",
+					"猫宮 ひなた", "岡部 倫太郎", "セイバーオルタ", "ギルガメッシュ", "佐藤四郎兵衛忠信",
+					"アイズ", "ノクティス", "中島 敦", "芥川 龍之介", "ライザリン・シュタウト",
+					"ジョーカー", "アインズ・ウール・ゴウン",
+				]
+			];
+			var heroRole = [// 0,1,2,3 = スプ,タン,ガン,アタ
+				[
+					0,1,2,3,3,
+					1,3,2,0,2,
+					1,0,1,0,3,
+					3,2,0,2,2,
+					0,3,2,3,1,
+					0,3,0,3,2,
+					2,1,3,2,
+				],
+				[
+					3,2,0,3,0,
+					2,3,3,2,1,
+					0,1,0,1,3,
+					2,2,3,2,1,
+					3,3,0,2,1,
+					0,2,
+				]
+			];
+			const orgHeroNum = heroName[0].length;//オリジナルヒーローの数
+			const koraboHeroNum = heroName[1].length;//コラボヒーローの数
+
+			var nanren;//何連回すか
+			//実装記念ピックアップ対応用↓###バグあり。変数初期化とか修正必要
+			var pickup_hero_num = -1;//ピックアップヒーロー番号
+			var pickup_rate = 5;//何倍ピックアップか．整数で頼む
+			var is_pickup = 0;//0=なし，1=あり．(ロール別限定はまた来たら実装するか．2,3,4,5で)
+
+
+
+			/*ヒーロー番号対応表
+			0-4:アタリ，ジャス，リリカ，のほ，忠臣
+			5-9:ジャンヌ，マルコス，ルチ，ボイド，まとい 
+			10-14:グス，テスラ，ヴィオ，コクリコ，マリア
+			15-19:アダム，13，勇者，メグメグ，イスタカ
+			20-24:きらら，ポロ，ソーン，デルミン，トマス
+			25-29:零夜，ルルカ，ピエール，甘色, ニズ
+			30-34:GBG，アリス, イグニス, 輪廻,
+			orgHeroNum + の番号
+			0-4:ソル，デズ，ミク，リュウ，春麗
+			5-9:リア，レム，カイ，リン，レン
+			10-14:ザクレイ，モノクマ，アクア，めぐみん，リヴァイ
+			15-19:猫宮，オカリン，セイバー，ギル，忠信
+			20-24:アイズ, ノクト, 中島, 芥川, ライザ
+			25-29:ジョーカー, アインズ,
+			*/
+
+			for(i = 0;i < koraboHeroNum;i++){
+				heroName[0].push(heroName[1][i]);
+			}//コラボヒーロー名前配列の結合
+
+			var hitHero = [ //コラボヒーローガチャで当たるヒーロー番号（オリジナルヒーローのコスチューム含め）
+				[],//0:オリジナルヒーロー全て
+				[orgHeroNum + 0,orgHeroNum + 1,orgHeroNum + 7],//1:GG
+				[orgHeroNum + 2,orgHeroNum + 8,orgHeroNum + 9],//2:ボカロ
+				[orgHeroNum + 3,orgHeroNum + 4],//3:SF
+				[orgHeroNum + 5,orgHeroNum + 6, 2, 3, 6, 10, 11, 14],//4:リゼロ
+				[orgHeroNum + 10],//5:殺戮の天使
+				[orgHeroNum + 11],//6:ダンロン
+				[orgHeroNum + 12,orgHeroNum + 13],//7:このすば
+				[orgHeroNum + 14],//8:進撃
+				[orgHeroNum + 15],//9:猫宮
+				[orgHeroNum + 16, 2, 3, 5, 11, 13],//10:シュタゲ
+				[orgHeroNum + 17,orgHeroNum + 18],//11:Fate
+				[orgHeroNum + 19],//12:歌舞伎
+				[orgHeroNum + 20,5,9,12,15,26],//13:ダンまち
+				[0, 3, 7, 14, 16],//14:FF恒常
+				[orgHeroNum + 22,orgHeroNum + 23,15,22,24,25,28],//15:文スト
+				[orgHeroNum + 24],//ライザ２
+				[orgHeroNum + 25, 0, 8, 14, 16, 30],//ペルソナ５
+				[orgHeroNum + 26, 1, 7, 12, 13, 22, 29],//オーバーロード
+
+				[2, 3, 5, 8, 9, 12, 13, 14, 18],//2017&2018水着
+				[0, 1, 4, 6, 7, 10, 11, 20, 23],//2019水着
+				[15, 19, 21, 22, 26],//2020水着
+				[16, 17, 27, 28, 30],//2021水着 21
+				[0, 1, 2, 4, 5, 7, 9, 12, 17, 19],//2017&2018ハロウィン
+				[10, 14, 16, 22, 23, 24, 25, 27],//2019&2020ハロウィン
+				[3, 11, 15, 26, 31],//2021ハロウィン
+			];
+			for(i = 0; i < orgHeroNum; i++)
+			{
+				hitHero[0].push(i);
+			}
+
+			var koraboRate = [ //↑に対する当選確率.もっとスマートにしたいけど例外多いからこれでいいや
+				[],//オリジナル
+				[0.33,0.33,0.34],//GG
+				[0.33,0.33,0.34],//ボカロ
+				[0.5,0.5],//SF
+				[0.25, 0.25, 0.083, 0.083, 0.083, 0.083, 0.083, 0.085],//リゼロ
+				[1],//殺戮の天使
+				[1],//ダンロン
+				[0.5,0.5],//このすば
+				[1],//進撃
+				[1],//猫宮
+				[0.5, 0.1, 0.1, 0.1, 0.1, 0.1],//シュタゲ
+				[0.5,0.5],//Fate
+				[1],//歌舞伎
+				[0.5, 0.1, 0.1, 0.1, 0.1, 0.1],//ダンまち
+				[0.2, 0.2, 0.2, 0.2, 0.2],//FF（3枚で確定、1枚でオリジナルと特殊）
+				[0.25, 0.25, 0.1, 0.1, 0.1, 0.1, 0.1],//文スト
+				[1],//ライザ２
+				[0.5, 0.1, 0.1, 0.1, 0.1, 0.1],//ペルソナ５
+				[0.5, 0.083, 0.083, 0.083, 0.083, 0.083, 0.085],//オーバーロード
+
+				[0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.12],//2017&2018水着
+				[0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.11, 0.12],//2019水着
+				[0.2, 0.2, 0.2, 0.2, 0.2],//2020水着
+				[0.2, 0.2, 0.2, 0.2, 0.2],//2021水着
+				[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],//2017&2018ハロウィン
+				[0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125],//2019&2020ハロウィン
+				[0.2, 0.2, 0.2, 0.2, 0.2],//2021ハロウィン
+
+			];
+
+		</script>
+	</body>
+</html>
