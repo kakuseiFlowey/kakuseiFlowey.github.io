@@ -69,7 +69,21 @@ ul li{
     line-height: 1.5;
 }
 
-
+.top-banner
+{
+    display: flex;
+    flex-wrap:wrap;
+}
+.top-banner .org-li {
+    width: calc(100%/3);
+    padding:0 5px;
+    box-sizing:border-box;
+}
+.top-banner .org-li img {
+    max-width:100%;
+    height: auto;
+    border:solid 1px #ccc;
+}
   
 
 .btnspinner{
