@@ -44,11 +44,11 @@
 					<tr>
 						<th>出現ロール</th>
 						<td>
-							<label><input type="radio" name="roleChoice" value="9" checked>全て</label>
-							<label><input type="radio" name="roleChoice" value="0">スプリンター</label>
-							<label><input type="radio" name="roleChoice" value="1">タンク</label>
-							<label><input type="radio" name="roleChoice" value="2">ガンナー</label>
-							<label><input type="radio" name="roleChoice" value="3">アタッカー</label>
+							<label><input type="radio" name="roleChoice" value="0" checked>全て</label>
+							<label><input type="radio" name="roleChoice" value="2">スプ</label>
+							<label><input type="radio" name="roleChoice" value="3">タン</label>
+							<label><input type="radio" name="roleChoice" value="4">ガン</label>
+							<label><input type="radio" name="roleChoice" value="5">アタ</label>
 						</td>
 					</tr>
 					<tr>
@@ -99,6 +99,21 @@
 							koraboRate[0].push(1.0 / (orgHeroNum + pickup_rate - 1));
 						}
 					}
+				} else {
+					//ロール別ピックアップ2,3,4,5
+					let tmpNum = 0;
+					for (i = 0; i < orgHeroNum; i++) {
+						if (is_pickup - 2 == heroRole[0][i]) {
+							tmpNum++;
+						}
+					}
+					for (i = 0; i < orgHeroNum; i++) {
+						if (is_pickup - 2 == heroRole[0][i]) {
+							koraboRate[0].push(1.0 / tmpNum);
+						} else {
+							koraboRate[0].push(0.0);
+						}
+					}
 				}
 				// 0.001を足して、乱数0.0~1.0の範囲を完全にカバー
 				koraboRate[0][orgHeroNum - 1] += 0.001;
@@ -113,7 +128,10 @@
 				}
 
 				//ピックアップチェック
-				if(document.form1.pickupChoice.value == 0){
+				if (document.form1.elements['roleChoice'].value != 0) {
+					//ロール別ピックアップ2,3,4,5
+					is_pickup = document.form1.elements['roleChoice'].value;
+				} else if(document.form1.pickupChoice.value == 0){
 					is_pickup = 0;
 				} else {
 					is_pickup = 1;
@@ -221,7 +239,6 @@
 			const koraboHeroNum = heroName[1].length;//コラボヒーローの数
 
 			var nanren;//何連回すか
-			//実装記念ピックアップ対応用↓###バグあり。変数初期化とか修正必要
 			var pickup_hero_num = -1;//ピックアップヒーロー番号
 			var pickup_rate = 5;//何倍ピックアップか．整数で頼む
 			var is_pickup = 0;//0=なし，1=あり．(ロール別限定はまた来たら実装するか．2,3,4,5で)
