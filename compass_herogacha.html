@@ -35,10 +35,20 @@
 						<th>ピックアップ（オリジナル以外無効）</th>
 						<td>
 							<select name="pickupChoice">
-								<option value="0">なし</option>
+								<option value="0" selected>なし</option>
 								<option value="32">イグニス出現率5倍</option>
-								<option value="33" selected>輪廻出現率5倍</option>
+								<option value="33">輪廻出現率5倍</option>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>出現ロール</th>
+						<td>
+							<label><input type="radio" name="roleChoice" value="9" checked>全て</label>
+							<label><input type="radio" name="roleChoice" value="0">スプリンター</label>
+							<label><input type="radio" name="roleChoice" value="1">タンク</label>
+							<label><input type="radio" name="roleChoice" value="2">ガンナー</label>
+							<label><input type="radio" name="roleChoice" value="3">アタッカー</label>
 						</td>
 					</tr>
 					<tr>
