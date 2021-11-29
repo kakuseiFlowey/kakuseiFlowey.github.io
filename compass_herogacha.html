@@ -87,9 +87,12 @@
 			// 0.001をkoraboRate[0][orgHeroNum - 1]に足して確実に100超す方針で。ヒーローが1000体以下ならこれで確実に100.0%を超える
 			function set_rate(){
 				koraboRate[0].splice(0);
+				hitHero[0].splice(0);
+
 				if(is_pickup == 0){
 					for(i = 0;i < orgHeroNum;i++){
 						koraboRate[0].push(1.0 / orgHeroNum);
+						hitHero[0].push(i);
 					}
 				} else if(is_pickup == 1) {
 					for(i = 0;i < orgHeroNum;i++){
@@ -98,6 +101,7 @@
 						} else {
 							koraboRate[0].push(1.0 / (orgHeroNum + pickup_rate - 1));
 						}
+						hitHero[0].push(i);
 					}
 				} else {
 					//ロール別ピックアップ2,3,4,5
@@ -105,18 +109,17 @@
 					for (i = 0; i < orgHeroNum; i++) {
 						if (is_pickup - 2 == heroRole[0][i]) {
 							tmpNum++;
+							hitHero[0].push(i);
 						}
 					}
 					for (i = 0; i < orgHeroNum; i++) {
 						if (is_pickup - 2 == heroRole[0][i]) {
 							koraboRate[0].push(1.0 / tmpNum);
-						} else {
-							koraboRate[0].push(0.0);
 						}
 					}
 				}
 				// 0.001を足して、乱数0.0~1.0の範囲を完全にカバー
-				koraboRate[0][orgHeroNum - 1] += 0.001;
+				koraboRate[0][koraboRate[0].length - 1] += 0.001;
 				return;
 			}
 
@@ -152,7 +155,7 @@
 				let looplen = hitHero[koraboWhat].length;
 				for(i = 0;i < looplen;i++){
 					new_element = document.createElement('li');
-					new_element.textContent = heroName[0][hitHero[koraboWhat][i]] + " :" + (100 * koraboRate[koraboWhat][i]) + "%";
+					new_element.textContent = heroName[0][hitHero[koraboWhat][i]] + " :" + Math.round(100 * koraboRate[koraboWhat][i] * 10) / 10 + "%";
 					parent.appendChild(new_element);
 				}
 
@@ -295,10 +298,6 @@
 				[10, 14, 16, 22, 23, 24, 25, 27],//2019&2020ハロウィン
 				[3, 11, 15, 26, 31],//2021ハロウィン
 			];
-			for(i = 0; i < orgHeroNum; i++)
-			{
-				hitHero[0].push(i);
-			}
 
 			var koraboRate = [ //↑に対する当選確率.もっとスマートにしたいけど例外多いからこれでいいや
 				[],//オリジナル
