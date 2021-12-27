@@ -293,7 +293,7 @@
 						}
 					}
 				}
-				if(is_pickup != 0){//（優勝チームデッキ等の）ピックアップガチャなら倍率を反映
+				if(is_pickup !== 0){//（優勝チームデッキ等の）ピックアップガチャなら倍率を反映
 					let len = pickup_num.length;
 					for(i = 0;i < len;i++){
 						card_pick[pickup_num[i][0]][KORABO + pickup_num[i][1]][pickup_num[i][2]] = pickup_rate;
@@ -306,7 +306,7 @@
 				//ガチャ用データ生成ループ
 				for(i = 0;i < 3;i++){//UR,SR,Rを順次追加
 					for(j = 0;j <= KORABO + user_rank;j++){//解放ランクまでしか追加しない
-						if(j == KORABO){//常設出ないコラボやってるかチェックをここで実施
+						if(j === KORABO){//常設出ないコラボやってるかチェックをここで実施
 							let flag = 0;
 							for(k = 0;k < KORABO;k++){
 								flag += bairitu[2][k] * only_korabo[k];
@@ -368,7 +368,7 @@
 				new_element.textContent = "UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%";
 				parent.appendChild(new_element);
 
-				if(bairitu[1][0] * bairitu[1][1] * bairitu[1][2] != 1){
+				if(bairitu[1][0] * bairitu[1][1] * bairitu[1][2] !== 1){
 					new_element = document.createElement('p');
 					new_element.textContent = "常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍";
 					parent.appendChild(new_element);
@@ -376,7 +376,7 @@
 
 				for(i = 0;i < korabo_name.length;i++){
 					if(bairitu[2][i] > 0){
-						if(only_korabo[i] == 0){
+						if(only_korabo[i] === 0){
 							new_element = document.createElement('p');
 							new_element.textContent = korabo_name[i] + "コラボカード出現率" + bairitu[2][i] + "倍";
 							parent.appendChild(new_element);
@@ -387,7 +387,7 @@
 						}
 					}
 				}
-				if(is_pickup != 0){
+				if(is_pickup !== 0){
 					new_element = document.createElement('p');
 					new_element.textContent = pickup_name + "【出現率" + pickup_rate +  "倍】";
 					parent.appendChild(new_element);
