@@ -218,24 +218,24 @@
 				return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 			}
 
-			function func_koraboset(){
+			function func_koraboset() {
 				// コラボ設定
 				bairitu[2] = new Array(KORABO);
-				for(let i = 0;i < KORABO;i++){
+				for (let i = 0; i < KORABO; i++) {
 					bairitu[2][i] = 0;
 				}
-				if(document.form1.koraboChoice.selectedIndex > 0){
+				if (document.form1.koraboChoice.selectedIndex > 0) {
 					let tmpBairitu = Number(document.form1.koraboRateChoice.value);
 					bairitu[2][KORABO - document.form1.koraboChoice.selectedIndex] = tmpBairitu;
 				}
 			}
 
-			function func_rankset(){
+			function func_rankset() {
 				// ランク設定
 				user_rank = document.form1.rankChoice.selectedIndex;
 			}
 
-			function func_ursrset(){
+			function func_ursrset() {
 				// UR倍率設定
 				let tmpBairituArray = [
 					[1.0, 1.0],
@@ -252,7 +252,7 @@
 				rarity_rate[2] = 1.0 - rarity_rate[0] - rarity_rate[1];//使わないけど一応Rの出現率
 			}
 
-			function func_typeset(){
+			function func_typeset() {
 				// 属性確率設定
 				let tmpBairituArray = [
 					[1, 1, 1],
@@ -266,7 +266,7 @@
 				bairitu[1] = tmpBairituArray[document.form1.typeChoice.selectedIndex];
 			}
 
-			function func_pickset(){
+			function func_pickset() {
 				// ピックアップ設定
 				let idx = Number(document.form1.pickChoice.value);
 				is_pickup = idx;//0ならピックアップなし、それ以外ならあり
@@ -275,7 +275,7 @@
 				pickup_num = PickupCardNumberArray[idx];//二次元配列
 			}
 
-			function func_set(){
+			function func_set() {
 				// ガチャるボタンが押されたら呼ばれる
 				func_rankset();
 				func_koraboset();
@@ -284,18 +284,18 @@
 				func_pickset();
 				nanren = document.getElementById("nanren").value;
 				card_pick = [[],[],[]];//カードピックアップ率，デフォルトは1
-				for(i = 0;i < 3;i++){//デフォルトのcard_pick配列を生成
-					for(j = 0;j <= KORABO + 6;j++){
+				for (i = 0; i < 3; i++) {//デフォルトのcard_pick配列を生成
+					for (j = 0; j <= KORABO + 6; j++){
 						card_pick[i].push([]);
 						let len = card_name[i][j].length;
-						for(k = 0;k < len;k++){
+						for (k = 0; k < len; k++) {
 							card_pick[i][j].push(1);
 						}
 					}
 				}
-				if(is_pickup !== 0){//（優勝チームデッキ等の）ピックアップガチャなら倍率を反映
+				if (is_pickup !== 0) {//（優勝チームデッキ等の）ピックアップガチャなら倍率を反映
 					let len = pickup_num.length;
-					for(i = 0;i < len;i++){
+					for (i = 0; i < len; i++) {
 						card_pick[pickup_num[i][0]][KORABO + pickup_num[i][1]][pickup_num[i][2]] = pickup_rate;
 					}
 				}
@@ -304,28 +304,28 @@
 				card_cnt = [[],[],[]];//当たったカード数をカウントする
 				card_idx = [[],[],[]];//ダブりを管理する添え字配列．0,-1等が入る．-1なら一個前と同名カード
 				//ガチャ用データ生成ループ
-				for(i = 0;i < 3;i++){//UR,SR,Rを順次追加
-					for(j = 0;j <= KORABO + user_rank;j++){//解放ランクまでしか追加しない
-						if(j === KORABO){//常設出ないコラボやってるかチェックをここで実施
+				for (i = 0; i < 3; i++) {//UR,SR,Rを順次追加
+					for (j = 0; j <= KORABO + user_rank; j++) {//解放ランクまでしか追加しない
+						if (j === KORABO) {//常設出ないコラボやってるかチェックをここで実施
 							let flag = 0;
-							for(k = 0;k < KORABO;k++){
+							for (k = 0; k < KORABO; k++) {
 								flag += bairitu[2][k] * only_korabo[k];
 							}
-							if(flag > 0)break;//常設追加せず終了
+							if (flag > 0) break;//常設追加せず終了
 						}
 						let len = card_name[i][j].length;
-						for(k = 0;k < len;k++){
-								if(j < KORABO){//コラボガチャなら追加
-									for(l = 0;l < bairitu[2][j];l++){
+						for (k = 0; k < len; k++) {
+								if (j < KORABO) {//コラボガチャなら追加
+									for (l = 0; l < bairitu[2][j]; l++) {
 										card_hit[i].push(card_name[i][j][k]);
 										card_cnt[i].push(0);
 										card_idx[i].push(l * (-1));
 									}	
-								}else{//常設カード追加
-									for(l = 0;l < bairitu[1][card_type[i][j][k]] * card_pick[i][j][k];l++){
-										if(card_pick[i][j][k] > 1){
+								} else {//常設カード追加
+									for (l = 0; l < bairitu[1][card_type[i][j][k]] * card_pick[i][j][k]; l++) {
+										if (card_pick[i][j][k] > 1) {
 											card_hit[i].push(card_name[i][j][k] + "【Pick】");
-										}else{
+										} else {
 											card_hit[i].push(card_name[i][j][k]);
 										}
 										card_cnt[i].push(0);
@@ -341,14 +341,14 @@
 			function func_proc(){
 				//ガチャ処理
 				let rVal;
-				for(let i = 0;i < nanren;i++){
+				for (let i = 0; i < nanren; i++) {
 					rVal = Math.random();
 					let n1,n2;
-					if(rVal <= rarity_rate[0]){
+					if (rVal <= rarity_rate[0]) {
 						n1 = 0;//UR
-					}else if(rVal <= rarity_rate[0] + rarity_rate[1]){
+					} else if (rVal <= rarity_rate[0] + rarity_rate[1]) {
 						n1 = 1;//SR
-					}else{
+					} else {
 						n1 = 2;//R
 					}
 					n2 = getRandomInt(0,card_hit[n1].length);
@@ -359,7 +359,7 @@
 
 			function func_show(){
 				let parent = document.getElementById("info");
-				while(parent.firstChild){//既に書き出した子要素を全部削除
+				while (parent.firstChild) {//既に書き出した子要素を全部削除
 					parent.removeChild(parent.firstChild);
 				}
 
@@ -368,33 +368,33 @@
 				new_element.textContent = "UR " + rarity_rate[0] * 100 + "%, SR " + rarity_rate[1] * 100 + "%";
 				parent.appendChild(new_element);
 
-				if(bairitu[1][0] * bairitu[1][1] * bairitu[1][2] !== 1){
+				if (bairitu[1][0] * bairitu[1][1] * bairitu[1][2] !== 1) {
 					new_element = document.createElement('p');
 					new_element.textContent = "常設火, 水, 木属性倍率 = " + bairitu[1][0] + ", " + bairitu[1][1] + ", " + bairitu[1][2] + "倍";
 					parent.appendChild(new_element);
 				}
 
-				for(i = 0;i < korabo_name.length;i++){
-					if(bairitu[2][i] > 0){
-						if(only_korabo[i] === 0){
+				for (i = 0; i < korabo_name.length; i++){
+					if (bairitu[2][i] > 0) {
+						if (only_korabo[i] === 0) {
 							new_element = document.createElement('p');
 							new_element.textContent = korabo_name[i] + "コラボカード出現率" + bairitu[2][i] + "倍";
 							parent.appendChild(new_element);
-						}else{
+						} else {
 							new_element = document.createElement('p');
 							new_element.textContent = korabo_name[i] + "コラボカード限定";
 							parent.appendChild(new_element);
 						}
 					}
 				}
-				if(is_pickup !== 0){
+				if (is_pickup !== 0) {
 					new_element = document.createElement('p');
 					new_element.textContent = pickup_name + "【出現率" + pickup_rate +  "倍】";
 					parent.appendChild(new_element);
 					new_element = document.createElement('p');
 					new_element.textContent = "/-------------↓↓対象カード-------------";
 					parent.appendChild(new_element);
-					for(i = 0;i < pickup_num.length;i++){
+					for (i = 0; i < pickup_num.length; i++) {
 						new_element = document.createElement('div');
 						new_element.textContent = card_name[pickup_num[i][0]][KORABO + pickup_num[i][1]][pickup_num[i][2]];
 						parent.appendChild(new_element);
@@ -409,19 +409,19 @@
 
 				//ガチャ結果表示
 				let parent2 = document.getElementById("results");
-				while(parent2.firstChild){//既に書き出した子要素を全部削除
+				while (parent2.firstChild) {//既に書き出した子要素を全部削除
 					parent2.removeChild(parent2.firstChild);
 				}
-				for(let i = 0;i < 3;i++){//3段階のレアリティごとに実行
+				for (let i = 0; i < 3; i++) {//3段階のレアリティごとに実行
 					let len = card_hit[i].length;
-					for(let j = 1;j < len;j++){//ダブったカードの枚数を加算
-						if(card_cnt[i][j] > 0 && card_idx[i][j] < 0){
+					for (let j = 1; j < len; j++) {//ダブったカードの枚数を加算
+						if (card_cnt[i][j] > 0 && card_idx[i][j] < 0) {
 							card_cnt[i][j + card_idx[i][j]] += card_cnt[i][j];
 							card_cnt[i][j] = 0;
 						}
 					}
-					for(let j = 0;j < len;j++){//当たったカードレアリティ・カード名・枚数を表示
-						if(card_cnt[i][j] > 0){
+					for (let j = 0; j < len; j++) {//当たったカードレアリティ・カード名・枚数を表示
+						if (card_cnt[i][j] > 0) {
 							new_element = document.createElement('li');
 							new_element.textContent = rarity[i] + " " + card_hit[i][j] + " x " + card_cnt[i][j];
 							parent2.appendChild(new_element);
@@ -491,8 +491,6 @@
 				[1,1,2,1,0,1,2,2,0,1,2,0,1],
 				[0,1,0,0,1,2,1,0,1,0,2,0,1,0,1,0,2,2,1,0,1,2,1]
 				];
-
-
 			card_name[1] = [
 				["【刺激的絶命拳】ファウスト", "蔵土縁紗夢（くらどべり じゃむ）", "メイ", "ジャック・オー", "ラムレザル＝ヴァレンタイン", "エルフェルト＝ヴァレンタイン", "シン＝キスク", "カイ＝キスク", "ディズィー", "ソル＝バッドガイ"],
 				["【チャームスピーカー】初音 ミク", "【ピースメーカー】初音 ミク", "【スカイウォーカー】初音 ミク", "【パワフルプレイヤー】鏡音 レン", "【ハッピーシンガー】鏡音 リン"],
