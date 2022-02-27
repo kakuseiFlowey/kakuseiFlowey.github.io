@@ -39,6 +39,7 @@
 								<option value="4">リゼロ</option>
 								<option value="3">SFV</option>
 								<option value="2">初音ミク（2022、非ピックアップ）</option>
+								<option value="1">ギルティギア</option>
 							</select>
 						</td>
 					</tr>
@@ -290,7 +291,7 @@
 
 			var hitHero = [ //コラボヒーローガチャで当たるヒーロー番号（オリジナルヒーローのコスチューム含め）
 				[],//0:オリジナルヒーロー全て
-				[orgHeroNum + 0,orgHeroNum + 1,orgHeroNum + 7],//1:GG
+				[orgHeroNum + 0,orgHeroNum + 1,orgHeroNum + 7, 0, 4, 5, 11, 13, 14],//1:GG
 				[orgHeroNum + 2, orgHeroNum + 8, orgHeroNum + 9, 27, 28, 29, 30, 31],//2:初音ミク2022
 				[orgHeroNum + 3,orgHeroNum + 4],//3:SF
 				[orgHeroNum + 5,orgHeroNum + 6, 2, 3, 6, 10, 11, 14],//4:リゼロ
@@ -326,7 +327,7 @@
 
 			var koraboRate = [ //↑に対する当選確率.もっとスマートにしたいけど例外多いからこれでいいや
 				[],//オリジナル
-				[0.33,0.33,0.34],//GG
+				[0.25,0.25,0.25],//GG
 				[0.25,0.25,0.25],//初音ミク
 				[0.5,0.5],//SF
 				[0.25, 0.25],//リゼロ
