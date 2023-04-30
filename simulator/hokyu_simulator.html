@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>補給箱シミュレータ</title>
+        <link rel="stylesheet" href="../css/compass_gacha.css">
+    </head>
+    <body>
+        <a href="../index.html">ガチャシミュTOPへ</a>
+        <p class="button_wrapper">
+			<button class="btn">実験開始</button>
+		</p>
+        <h3>--鞄↓--</h3>
+		<ul id="results">
+			<!-- ここに子要素を追加して結果表示 -->
+		</ul>
+        <script>
+            // DOM
+			var dom1 = document.querySelector("button");
+			// イベント
+			dom1.addEventListener("click", func_set);
+
+		/*=====================
+		//	関数定義        	//
+		=====================*/
+
+            function getRandomInt(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+            }
+
+
+            function func_set()
+            {
+                let parent = document.getElementById("results");
+				while(parent.firstChild){//既に書き出した子要素を全部削除
+					parent.removeChild(parent.firstChild);
+				}
+
+                // newElement = document.createElement('li');
+                // newElement.textContent = "水";
+                // parent.appendChild(newElement);
+                // newElement = document.createElement('li');
+                // newElement.textContent = "パン";
+                // parent.appendChild(newElement);
+
+                //A型補給箱の決定
+				let Idx = getRandomInt(0, hokyu_A.length);
+                newElement = document.createElement('li');
+                newElement.textContent = hokyu_A[Idx];
+                parent.appendChild(newElement);         
+                
+                //D型補給箱の決定
+				Idx = getRandomInt(0, hokyu_D.length);
+                newElement = document.createElement('li');
+                newElement.textContent = hokyu_D[Idx];
+                parent.appendChild(newElement);      
+                
+                //クーラーボックスの決定
+				Idx = getRandomInt(0, hokyu_C.length);
+                newElement = document.createElement('li');
+                newElement.textContent = hokyu_C[Idx];
+                parent.appendChild(newElement);          
+                
+                //環境変数の服決定
+				let ClothesIdx = getRandomInt(0, kankyo_hensu.length);
+                newElement = document.createElement('p');
+                newElement.textContent = "（環境変数なら）" + kankyo_hensu[ClothesIdx];
+                parent.appendChild(newElement);                      
+
+                //キャッシーのランダム熟練決定
+				let WeaponTypeIdx = getRandomInt(0, weapon_type.length);
+                newElement = document.createElement('p');
+                newElement.textContent = "キャッシーの気分は『" + weapon_type[WeaponTypeIdx] + "』";
+                parent.appendChild(newElement);
+
+            }
+
+		/*=====================
+		//	データ置き場        //
+		=====================*/
+
+            var weapon_type = ["斬り", "突き", "鈍器", "投げ", "銃", "弓", "拳法"];
+
+            var kankyo_hensu = ["ドレス", "ハイビショップの服", "ビキニ"];
+
+            var hokyu_A = [
+                            //斬り, 斬り・突き
+                            "はさみ", "剃刀", "カッター", "つるはし", "包丁",
+                            "鎌", "ハチェット", "ナイフ", "シャムシール", "長剣",
+                            "刀",
+                            //突き
+                            "万年筆", "針", "短槍", "モリ", "長槍",
+                            //鈍器
+                            "枝", "大同類聚方", "扇子", "スカーフ", "人体模型",
+                            "破けた武功秘書・上", "破けた武功秘書・下", "短棒", "槍の柄", "フライパン", 
+                            "竹", "鎖", "鉄パイプ", "バット", "鞭",
+                            "金槌", "石斧", "長棒", "熱い鉄パイプ", "トンファー",
+                            "鎖棒", "特殊警棒", "唐棹",
+                            //投げ
+                            "ガラスのビン", "ガラスの玉", "グラス", "皿", "缶",
+                            "ペットボトル", "白チョーク", "ドジョウ", "鮒", "原石",
+                            "石ころ", "鉄球", "鍋", "投擲用の短刀", "馬牌", 
+                            "トランプカード", "ダーツ",
+                            //銃
+                            "ノーザンリボルバー", "サザーンリボルバー", "火縄銃", "SGOTY870", "V-PP",
+                            "F92S", "IM-10", "マグナム・パイソン",
+                            //弓
+                            "石弓", "洋弓", "和弓", "木弓", "コンポジットボウ",
+                            "弩", "弾弓",
+                            //拳法
+                            "軍手", "ナックル", "爪", "アイアンナックル",
+                            //その他
+                            "ピアノ線",
+            ];
+            var hokyu_D = [
+                            //頭
+                            "めがね", "登山帽", "カチューシャ", "消防ヘルメット", "安全帽",
+                            //服
+                            "ウィンドブレーカー", "司祭服", "医師ガウン", "防火服", "僧服",
+                            "全身水着", "布の鎧",
+                            //腕
+                            "指ぬき", "腕時計", "予備軍の腕章", "ブレスレット", "腕ぬき",
+                            "ブレーサー", "リストバンド",
+                            //脚
+                            "スリッパ", "木靴", "登山靴", "スニーカー", "タイツ",
+                            "ブーツ", "軽量化ブーツ",
+                            //装具
+                            "花", "リボン", "双眼鏡", "十字架", "ベルト",
+                            "人形", "弾倉", "矢筒", "狙撃スコープ",
+            ];
+            var hokyu_C = [
+                            //食料
+                            "醤油", "サツマイモ", "カレーパウダー", "薬草", "ジャガイモ",
+                            "にんにく", "ゴボウ", "マグロ", "鳥の卵", "オレンジ",
+                            "絆創膏", "インスタントラーメン", "消毒薬", "クッキー", "チョコレート",
+                            "鳥肉", "包帯", "サプリ", "漢方茶", "おこげスープ",
+                            "蜂蜜薬", "救急箱", "漢方針", "ハーブ", "亀鍋",
+                            "キンパ", "聖水", "刺身", "漢方薬", "焼きうなぎ",
+                            //飲料
+                            "氷", "イオンドリンク", "炭酸水", "タバコの葉", "肝機能強化剤",
+                            "コーヒー豆", "はちみつ", "バックス", "氷水", "1.5Lの水筒",
+                            "高梁酒", "蜂蜜水", "焼酎", "ホッケ茶", "薬酒",
+                            "ウイスキー", "百日酔",
+                            //強化
+                            "オイル", "釘", "砥石",
+                            //特殊・その他
+                            "サイレンサー", "ダンボール",
+                            //一般材料
+                            "皮", "ゴム", "屑鉄", "羽", "厚い紙",
+                            "お湯", "ライター", "バッテリー", "肥料", "アルコール",
+                            "生地", "接着剤", "鉄鉱石", "鉄糸", "火薬",
+                            "鋼鉄", "亀の甲羅", "油を染み込ませた布", "レーザーポインタ", "ルビー",
+                            "火打石", "ガラスの破片", "灰", "電子部品", "精巧な図面",
+                            "鉄板", "黄金",
+            ];
+
+            //環境ごとの実験体ピック率配列を作って、仮マッチング画面が作れたら面白いね。
+            /*var jikkentai_pick_rate = [
+                [0.1, 0.2,],//fiola
+                [0.1, 0.1,],//jackie
+                [0.8, 0.5,],//adela
+                [0.0, 0.2,],//jan
+                ...
+            ];
+            */
+
+		/*=====================
+		//	main               //
+		=====================*/
+
+            //ボタンが押されるとfunc_setが呼ばれるだけ。
+
+        </script>
+    </body>
+</html>
