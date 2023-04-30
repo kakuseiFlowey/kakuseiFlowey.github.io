@@ -1,0 +1,174 @@
+<html>
+    <script>
+        const ingredients = [30,21,24,6,15,10]; // 材料の数 [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン]
+        // const ingredients = [200,0,0,0,0,10];
+        const recipe1 = [1,1,1,0,0,0]; // ハンバーガー
+        const recipe2 = [1,1,1,1,0,0]; // チーズバーガー
+        const recipe3 = [1,1,2,1,1,0]; // ダブルパティバーガー
+        const recipe4 = [1,1,1,1,1,1]; // Elevenバーガー
+
+        // 2度同じものを調べないためのメモ帳
+        // 10,0,0,0,0,0 -> 7,1,0,0,0,0 -> 4,1,1,0,0
+        //              -> 7,0,1,0,0,0 -> 4,1,1,0,0
+        // こんな感じに枝分かれした後同じものを調べるのが無駄（交換はいつどの順番でやっても同価値）
+        // メモの方法は Map を使う
+        const memo = new Map();
+        // memo.set('40,0,0,0,0,0', true);
+        // console.log(memo.get('40,0,0,0,0,0')); // true
+        // console.log(memo.get('37,1,0,0,0,0')); // undefined
+        // if (!memo.get('array.toString()')) // と判定すると良いだろう
+
+        console.log("材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べます...");
+        const begin = Date.now();
+
+        let max_coins = 0;
+        let max_counts = [0,0,0,0];
+        let final_ingredients = Array.from(ingredients);
+
+        solveFunc(ingredients); // 交換しないのが最適なこともある
+        recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
+
+        console.log((Date.now() - begin)/1000 + "秒かかりました");
+        console.log("最大で" + max_coins + "コイン獲得できます。");
+        console.log("1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]");
+        console.log("2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう");
+        console.log("少し余った材料は、Elevenとスタッフが美味しくいただきます。");
+
+        /**
+         * 交換せずに作れる最適なバーガーの組み合わせを全探索
+         */
+        function solveFunc(ingredients) {
+            // console.log(ingredients + "を調べる");
+            for (let i = 0; i <= Math.min(ingredients[0]/recipe1[0], ingredients[1]/recipe1[1], ingredients[2]/recipe1[2]); i++) {
+                for (let j = 0; j <= (Math.min((ingredients[0]-i*recipe1[0])/recipe2[0], (ingredients[1]-i*recipe1[1])/recipe2[1], (ingredients[2]-i*recipe1[2])/recipe2[2], ingredients[3]/recipe2[3])); j++) {
+                    for (let k = 0; k <= (Math.min((ingredients[0]-i*recipe1[0]-j*recipe2[0])/recipe3[0], (ingredients[1]-i*recipe1[1]-j*recipe2[1])/recipe3[1], (ingredients[2]-i*recipe1[2]-j*recipe2[2])/recipe3[2], (ingredients[3]-j*recipe2[3])/recipe3[3], (ingredients[4]-i*recipe1[4])/recipe3[4])); k++) {
+                        const l = Math.min(ingredients[0]-i*recipe1[0]-j*recipe2[0]-k*recipe3[0], ingredients[1]-i*recipe1[1]-j*recipe2[1]-k*recipe3[1], ingredients[2]-i*recipe1[2]-j*recipe2[2]-k*recipe3[2], ingredients[3]-j*recipe2[3]-k*recipe3[3], ingredients[4]-i*recipe1[4]-k*recipe3[4], ingredients[5]);
+                        const coins = i*14 + j*22 + k*35 + l*50
+                        if (coins > max_coins) { // より良い組み合わせが見つかったので更新
+                            max_coins = coins;
+                            max_counts = [i, j, k, l];
+                            final_ingredients = ingredients;
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * 1回交換した先の最適解を求める
+         */ 
+        function recursiveFunc(org) {
+            if (!!memo.get(org.toString())) {
+                // もう調べたパターンなので戻る
+                return;
+            } else {
+                // 新しいパターンきたね メモして次に進む
+                memo.set(org.toString(), true);
+            }
+
+            // Elevenバーガーを作れる最大量
+            const eleven_burger_num = Math.min(org[0], org[1], org[2], org[3], org[4], org[5]);
+            // Elevenバーガーを最大までつくった余り材料
+            let sub = Array.from(org);
+            for (let i = 0; i < sub.length; i++) {
+                sub[i] -= eleven_burger_num;
+            }
+
+            if (Math.max(sub[0], sub[1], sub[2], sub[3], sub[4]) < 3) {
+                // 交換できない、あるいは意味ないので交換終わり
+                solveFunc(org);
+                return;
+            }
+
+            const max = Math.max(org[0], org[1], org[2], org[3], org[4]);
+            const min = Math.min(org[0], org[1], org[2], org[3], org[4]);
+            let count_max_flag = 0;
+            let count_min_flag = 0;
+            let max_index = -1;
+            let min_index = -1;
+            for (let i = 0; i < 5; i++) {
+                if (org[i] == max) {
+                    count_max_flag++;
+                    max_index = i;
+                }
+                if (org[i] == min) {
+                    count_min_flag++;
+                    min_index = i;
+                }
+            }
+            if (count_max_flag * count_min_flag == 1 && Math.min(max - 3, min + 1, org[5]) > Math.min(min, org[5])) {
+            // 一番多い材料を一番足りない材料に回す1回の交換で、Elevenバーガーが作れる数が増える -> その交換が最適なのでそれ以外の交換パターン打ち切り
+            // つまり、ベーコンの数を超えるまでは最多->最小への交換が最適ということ。ただし最多・最小どちらも1つに定まる場合に限る
+                let next = Array.from(org);
+                next[max_index] -= 3;
+                next[min_index] += 1;
+                solveFunc(next);
+                recursiveFunc(next);
+                return;
+            }
+
+            // ここまでで、確定的に明らかな交換パターンが定まらなかったので仕方なく全部調べる
+            // 交換する2種類の材料パターンを全部調べる
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5 && sub[i] >= 3; j++) {
+                    if (i == j) {
+                        // 交換元と交換先は別
+                        continue;
+                    } 
+                    if (ingredients[i] < org[i]) {
+                        // 1度でも交換で手に入れたものを3:1交換に出すのは論外
+                        continue;
+                    }
+                    if (ingredients[j] > org[j]) {
+                        // 1度でも交換に出したものを3:1交換で手に入れるのは論外
+                        continue;
+                    }
+                    // 交換処理
+                    let next = Array.from(org);
+                    next[i] -= 3;
+                    next[j] += 1;
+
+                    if ( // 考える意味がない i, j の組み合わせは飛ばす
+                        org[i] - 3 == 0 && i < 3 || // パン、チーズ、ビーフパティは0にしてはいけない
+                        j == 4 && org[3] < org[4] || // トマトよりレタスを増やす意味はない
+                        j >= 3 && Math.min(org[0], org[1], org[2]) < org[j] || // パン、チーズ、ビーフパティよりトマト、レタスを増やす意味はない
+                        (
+                            // パンとチーズの差が3以上あるのに解消しない
+                            Math.abs(org[0] - org[1]) >= 3 && 
+                            (Math.min(next[0], next[1]) <= Math.min(org[0], org[1]) && Math.max(next[0], next[1]) >= Math.max(org[0], org[1]))
+                        ) ||
+                        (
+                            // トマト < レタス で差が4以上あるのに解消しない
+                            org[4] - 3 > org[3] &&
+                            (i != 4 && j != 3)
+                        ) ||
+                        (
+                            // パン、チーズがビーフパティより多すぎるのに解消しない
+                            Math.max(org[0], org[1]) - 3 > org[2] &&
+                            (i >= 2 && j != 2)
+                        ) || 
+                        (
+                            // ビーフパティ余りすぎなのにそれを解消しない
+                            org[2] - 3 > Math.min(org[0], org[1]) * 2 && 
+                            (i != 2 && j >= 2) 
+                        ) ||
+                        (
+                            // 余るトマト、レタスを足りてないパン、チーズ、ビーフパティに換えられるのにそうしない
+                            Math.min(org[0], org[1], org[2]) < Math.max(org[3], org[4]) - 3 &&
+                            (i < 3 && j > 2)
+                        )
+                    ) {
+                        continue;
+                    }
+
+                    // i, j の交換に意味がありそうなので調べる
+                    solveFunc(next);
+                    // もう1回交換したのを調べる
+                    recursiveFunc(next);
+                }
+            }
+            // これ以降の組み合わせは全部調べた
+            return;
+        }
+    </script>
+</html>
