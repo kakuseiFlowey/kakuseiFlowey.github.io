@@ -6,13 +6,76 @@
     <body>
         <a href="../index.html">ガチャシミュTOPへ</a>
 
+        <!--
+        1. ボタンを押す
+        2. input に入力された材料の値を取得する
+        3. 最適解を求める
+        4. 出力する
+        -->
+
         <div class="spinner_area">
-            <input type="number" id="nanren" value="1">
+            <table>
+                <tr>
+                    <th>パン</th>
+                    <th>チーズ</th>
+                    <th>ビーフパティ</th>
+                    <th>トマト</th>
+                    <th>レタス</th>
+                    <th>ベーコン</th>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="number" id="ingredients1" value="0">
+                    </td>
+                    <td>
+                        <input type="number" id="ingredients2" value="0">
+                    </td>
+                    <td>
+                        <input type="number" id="ingredients3" value="0">
+                    </td>
+                    <td>
+                        <input type="number" id="ingredients4" value="0">
+                    </td>
+                    <td>
+                        <input type="number" id="ingredients5" value="0">
+                    </td>
+                    <td>
+                        <input type="number" id="ingredients6" value="0">
+                    </td>
+                </tr>
+            </table>
         </div>
+
+        <p class="button_wrapper">
+			<button class="btn">ハンバーガーを作る</button>
+		</p>
+
+        <h2>
+            説明
+        </h2>
+        <p>
+            <a href="https://event.playeternalreturn.com/S9_eleven-hamburger">Elevenのハンバーガー屋さん</a>
+            のハンバーガーを作る上で、最適なバーガーの組み合わせを求めるアプリです。
+        </p>
+        <p>
+            Elevenのハンバーガー屋さんは、エターナルリターンのWebイベント（2023/4/14 ~ 5/11開催）です。
+            詳しいことはブログ（執筆予定）をご覧ください。
+        </p>
+        <h2>
+            使い方
+        </h2>
+        <p>
+            材料の数を入力し、ボタンを押してください。
+        </p>
 
 
         <script>
-            const ingredients = [30,21,24,6,15,10]; // 材料の数 [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン]
+
+            let dom1 = document.querySelector("button");
+            dom1.addEventListener("click", clickEvent);
+
+            const MAX_INGREDIENTS_SUM = 12 * 25 + 3 + 6; // 与えられる最大材料数の合計（開催期間*12個 + シークレットミッション）
+            const ingredients = [52,37,41,20,27,13]; // 材料の数 [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン]
             // const ingredients = [200,0,0,0,0,10];
             const recipe1 = [1,1,1,0,0,0]; // ハンバーガー
             const recipe2 = [1,1,1,1,0,0]; // チーズバーガー
@@ -24,33 +87,65 @@
             //              -> 7,0,1,0,0,0 -> 4,1,1,0,0
             // こんな感じに枝分かれした後同じものを何度も調べるのは無駄なため、調べたパターンをメモする（交換はいつどの順番でやっても同価値）
             // メモの方法は Map を使う。キーは toString() した材料配列
-            const memo = new Map();
+            let memo = new Map();
             // memo.set('40,0,0,0,0,0', true);
             // console.log(memo.get('40,0,0,0,0,0')); // true
             // console.log(memo.get('37,1,0,0,0,0')); // undefined
             // if (!memo.get('array.toString()')) // と判定すると良いだろう
     
-            console.log("材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べます...");
-            const begin = Date.now();
-    
             let max_coins = 0;
             let max_counts = [0,0,0,0];
             let final_ingredients = Array.from(ingredients);
     
-            solveFunc(ingredients); // 交換しないのが最適なこともある
-            recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
-    
-            console.log((Date.now() - begin)/1000 + "秒かかりました");
-            console.log("最大で" + max_coins + "コイン獲得できます。");
-            console.log("1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]");
-            console.log("2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう");
-            console.log("少し余った材料は、Elevenとスタッフが美味しくいただきます。");
+            // solveFunc(ingredients); // 交換しないのが最適なこともある
+            // recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
+
+
+            /**
+             * ボタンクリックしたときに呼ばれる処理
+             */ 
+            function clickEvent() {
+                // 材料数取得、0未満は0とする
+                ingredients[0] = Number(document.getElementById("ingredients1").value) >= 0 ? Number(document.getElementById("ingredients1").value) : 0;
+                ingredients[1] = Number(document.getElementById("ingredients2").value) >= 0 ? Number(document.getElementById("ingredients2").value) : 0;
+                ingredients[2] = Number(document.getElementById("ingredients3").value) >= 0 ? Number(document.getElementById("ingredients3").value) : 0;
+                ingredients[3] = Number(document.getElementById("ingredients4").value) >= 0 ? Number(document.getElementById("ingredients4").value) : 0;
+                ingredients[4] = Number(document.getElementById("ingredients5").value) >= 0 ? Number(document.getElementById("ingredients5").value) : 0;
+                ingredients[5] = Number(document.getElementById("ingredients6").value) >= 0 ? Number(document.getElementById("ingredients6").value) : 0;
+            
+                let check_sum = 0;
+                for (let i = 0; i < ingredients.length; i++) {
+                    check_sum += ingredients[i];
+                }
+                if (check_sum > MAX_INGREDIENTS_SUM) {
+                    console.warn("材料の入力数が大きすぎます");
+                    // 大きい数で調べると場合によっては処理が重くなるため、現実にあり得るセットだけ調べる
+                    // 300,0,0,0,0,0 の最悪の場合でも20秒くらいで求まる
+                    return;
+                }
+
+                console.log("材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べます...");
+                // 情報初期化
+                const begin = Date.now();
+                max_coins = 0;
+                max_counts = [0,0,0,0];
+                final_ingredients = Array.from(ingredients);
+                memo = new Map(); // メモは材料セット変更毎に更新する、同じ結果を利用することは考えない（考えてもいいが確定処理について再検討する必要がある）
+
+                solveFunc(ingredients); // 交換しないのが最適なこともある
+                recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
+            
+                console.log((Date.now() - begin)/1000 + "秒かかりました");
+                console.log("最大で" + max_coins + "コイン獲得できます。");
+                console.log("1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]");
+                console.log("2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう");
+                console.log("少し余った材料は、Elevenとスタッフが美味しくいただきます。");
+            }
     
             /**
              * 交換せずに作れる最適なバーガーの組み合わせを全探索
              */
             function solveFunc(ingredients) {
-                // console.log(ingredients + "を調べる");
                 for (let i = 0; i <= Math.min(ingredients[0]/recipe1[0], ingredients[1]/recipe1[1], ingredients[2]/recipe1[2]); i++) {
                     for (let j = 0; j <= (Math.min((ingredients[0]-i*recipe1[0])/recipe2[0], (ingredients[1]-i*recipe1[1])/recipe2[1], (ingredients[2]-i*recipe1[2])/recipe2[2], ingredients[3]/recipe2[3])); j++) {
                         for (let k = 0; k <= (Math.min((ingredients[0]-i*recipe1[0]-j*recipe2[0])/recipe3[0], (ingredients[1]-i*recipe1[1]-j*recipe2[1])/recipe3[1], (ingredients[2]-i*recipe1[2]-j*recipe2[2])/recipe3[2], (ingredients[3]-j*recipe2[3])/recipe3[3], (ingredients[4]-i*recipe1[4])/recipe3[4])); k++) {
