@@ -69,6 +69,10 @@ ul li{
     line-height: 1.5;
 }
 
+ul .pacman{
+    margin-left: 45%;
+}
+
 .top-banner
 {
     display: flex;
