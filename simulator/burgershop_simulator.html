@@ -6,12 +6,19 @@
     <body>
         <a href="../index.html">ガチャシミュTOPへ</a>
 
+        <h1>Elevenのハンバーガー屋さん攻略</h1>
+
         <!--
-        1. ボタンを押す
-        2. input に入力された材料の値を取得する
-        3. 最適解を求める
+        1. ボタンを押す -> ok
+        2. input に入力された材料の値を取得する -> ok
+        3. 最適解を求める -> ok
         4. 出力する
         -->
+        <!-- 
+        EX. 便利ボタンを作る
+            - +1, -1, +5, -5 ボタン（個別、一括）
+            - reset, save, load ボタン
+         -->
 
         <div class="spinner_area">
             <table>
@@ -25,34 +32,37 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="number" id="ingredients1" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                     <td>
-                        <input type="number" id="ingredients2" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                     <td>
-                        <input type="number" id="ingredients3" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                     <td>
-                        <input type="number" id="ingredients4" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                     <td>
-                        <input type="number" id="ingredients5" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                     <td>
-                        <input type="number" id="ingredients6" value="0">
+                        <input type="number" class="item" value="0">
                     </td>
                 </tr>
             </table>
         </div>
 
         <p class="button_wrapper">
-			<button class="btn">ハンバーガーを作る</button>
+			<button class="btn" id="make_button">ハンバーガーを作る</button>
 		</p>
 
-        <h2>
-            説明
-        </h2>
+        <h3>最適解</h3>
+        <ul id="result">
+            <!-- ここに子要素を表示 -->
+        </ul>
+
+        <h2>説明</h2>
         <p>
             <a href="https://event.playeternalreturn.com/S9_eleven-hamburger">Elevenのハンバーガー屋さん</a>
             のハンバーガーを作る上で、最適なバーガーの組み合わせを求めるアプリです。
@@ -61,18 +71,18 @@
             Elevenのハンバーガー屋さんは、エターナルリターンのWebイベント（2023/4/14 ~ 5/11開催）です。
             詳しいことはブログ（執筆予定）をご覧ください。
         </p>
-        <h2>
-            使い方
-        </h2>
+        <h2>使い方</h2>
         <p>
             材料の数を入力し、ボタンを押してください。
         </p>
 
 
         <script>
+            /* 変数定義 */
+            const dom1 = document.getElementById("make_button");
+            dom1.addEventListener("click", makingBurger);
 
-            let dom1 = document.querySelector("button");
-            dom1.addEventListener("click", clickEvent);
+            const parent = document.getElementById("result");
 
             const MAX_INGREDIENTS_SUM = 12 * 25 + 3 + 6; // 与えられる最大材料数の合計（開催期間*12個 + シークレットミッション）
             const ingredients = [52,37,41,20,27,13]; // 材料の数 [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン]
@@ -101,60 +111,111 @@
             // recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
 
 
+            /* 関数定義 */
+
             /**
-             * ボタンクリックしたときに呼ばれる処理
+             * 画面再描画
+             */
+            const repaint = async () => {
+                for (let i = 0; i < 2; i++) {
+                    await new Promise(resolve => requestAnimationFrame(resolve));
+                }
+            };
+
+            /**
+             * ハンバーガーを作るボタンクリックしたときに呼ばれる処理
              */ 
-            function clickEvent() {
-                // 材料数取得、0未満は0とする
-                ingredients[0] = Number(document.getElementById("ingredients1").value) >= 0 ? Number(document.getElementById("ingredients1").value) : 0;
-                ingredients[1] = Number(document.getElementById("ingredients2").value) >= 0 ? Number(document.getElementById("ingredients2").value) : 0;
-                ingredients[2] = Number(document.getElementById("ingredients3").value) >= 0 ? Number(document.getElementById("ingredients3").value) : 0;
-                ingredients[3] = Number(document.getElementById("ingredients4").value) >= 0 ? Number(document.getElementById("ingredients4").value) : 0;
-                ingredients[4] = Number(document.getElementById("ingredients5").value) >= 0 ? Number(document.getElementById("ingredients5").value) : 0;
-                ingredients[5] = Number(document.getElementById("ingredients6").value) >= 0 ? Number(document.getElementById("ingredients6").value) : 0;
-            
+            async function makingBurger() {
+                const items = document.getElementsByClassName("item");
                 let check_sum = 0;
-                for (let i = 0; i < ingredients.length; i++) {
+                for (let i = 0; i < items.length; i++) {
+                    // 材料数をセット、変な数字は修正
+                    const num = items.item(i).value == "" ? 0 : parseInt(items.item(i).value, 10);
+                    ingredients[i] = Math.max(0, num);
+                    items.item(i).value = ingredients[i];
                     check_sum += ingredients[i];
                 }
                 if (check_sum > MAX_INGREDIENTS_SUM) {
-                    console.warn("材料の入力数が大きすぎます");
-                    // 大きい数で調べると場合によっては処理が重くなるため、現実にあり得るセットだけ調べる
-                    // 300,0,0,0,0,0 の最悪の場合でも20秒くらいで求まる
+                    while(parent.firstChild) {
+                        parent.removeChild(parent.firstChild);
+                    }
+                    let elem = document.createElement("li");
+                    elem.textContent = "???「材料の数が多すぎる。計量も料理の一部だ。」";
+                    parent.appendChild(elem);
+                    // 実際にはありえない大きい数で調べると、場合によっては処理が重くなる
+                    // 考えられる最悪の場合(300,0,0,0,0,0)でも20秒くらいで求まる
                     return;
                 }
 
-                console.log("材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べます...");
+                // Loading 描画 先に画面更新したいので同期処理
+                await drawLoading();
+
                 // 情報初期化
                 const begin = Date.now();
                 max_coins = 0;
                 max_counts = [0,0,0,0];
                 final_ingredients = Array.from(ingredients);
-                memo = new Map(); // メモは材料セット変更毎に更新する、同じ結果を利用することは考えない（考えてもいいが確定処理について再検討する必要がある）
+                memo = new Map(); // メモは材料セット変更毎に初期化する
 
+                // 計算開始
                 solveFunc(ingredients); // 交換しないのが最適なこともある
                 recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
             
-                console.log((Date.now() - begin)/1000 + "秒かかりました");
-                console.log("最大で" + max_coins + "コイン獲得できます。");
-                console.log("1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]");
-                console.log("2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう");
-                console.log("少し余った材料は、Elevenとスタッフが美味しくいただきます。");
+                // 結果表示
+                while(parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+                let elem = [];
+                for (let i = 0; i < 6; i++) {
+                    elem.push(document.createElement("li"));
+                }
+                elem[0].textContent = "材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べました";
+                elem[1].textContent = (Date.now() - begin)/1000 + "秒かかりました";
+                elem[2].textContent = "最大で" + max_coins + "コイン獲得できます。";
+                elem[3].textContent = "1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]";
+                elem[4].textContent = "2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう";
+                elem[5].textContent = "余った材料はElevenとスタッフが美味しくいただきました。";
+                for (let element of elem) {
+                    parent.appendChild(element);
+                }
+            }
+
+            /**
+             * Loading 表示
+             */ 
+            async function drawLoading() {
+                while(parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+                let load = document.createElement("p");
+                load.textContent = "Elevenをお手伝いしています（最大約20秒）";
+                parent.appendChild(load);
+                
+                let pacman = document.createElement("div");
+                pacman.classList.add("pacman");
+                parent.appendChild(pacman);
+                let parent_pacman = document.querySelector(".pacman");
+                for (let i = 0; i < 5; i++) {
+                    let elem = document.createElement("div");
+                    parent_pacman.appendChild(elem);
+                }
+                await repaint();
             }
     
             /**
              * 交換せずに作れる最適なバーガーの組み合わせを全探索
+             * ing 材料配列
              */
-            function solveFunc(ingredients) {
-                for (let i = 0; i <= Math.min(ingredients[0]/recipe1[0], ingredients[1]/recipe1[1], ingredients[2]/recipe1[2]); i++) {
-                    for (let j = 0; j <= (Math.min((ingredients[0]-i*recipe1[0])/recipe2[0], (ingredients[1]-i*recipe1[1])/recipe2[1], (ingredients[2]-i*recipe1[2])/recipe2[2], ingredients[3]/recipe2[3])); j++) {
-                        for (let k = 0; k <= (Math.min((ingredients[0]-i*recipe1[0]-j*recipe2[0])/recipe3[0], (ingredients[1]-i*recipe1[1]-j*recipe2[1])/recipe3[1], (ingredients[2]-i*recipe1[2]-j*recipe2[2])/recipe3[2], (ingredients[3]-j*recipe2[3])/recipe3[3], (ingredients[4]-i*recipe1[4])/recipe3[4])); k++) {
-                            const l = Math.min(ingredients[0]-i*recipe1[0]-j*recipe2[0]-k*recipe3[0], ingredients[1]-i*recipe1[1]-j*recipe2[1]-k*recipe3[1], ingredients[2]-i*recipe1[2]-j*recipe2[2]-k*recipe3[2], ingredients[3]-j*recipe2[3]-k*recipe3[3], ingredients[4]-i*recipe1[4]-k*recipe3[4], ingredients[5]);
+            function solveFunc(ing) {
+                for (let i = 0; i <= Math.min(ing[0]/recipe1[0], ing[1]/recipe1[1], ing[2]/recipe1[2]); i++) {
+                    for (let j = 0; j <= (Math.min((ing[0]-i*recipe1[0])/recipe2[0], (ing[1]-i*recipe1[1])/recipe2[1], (ing[2]-i*recipe1[2])/recipe2[2], ing[3]/recipe2[3])); j++) {
+                        for (let k = 0; k <= (Math.min((ing[0]-i*recipe1[0]-j*recipe2[0])/recipe3[0], (ing[1]-i*recipe1[1]-j*recipe2[1])/recipe3[1], (ing[2]-i*recipe1[2]-j*recipe2[2])/recipe3[2], (ing[3]-j*recipe2[3])/recipe3[3], (ing[4]-i*recipe1[4])/recipe3[4])); k++) {
+                            const l = Math.min(ing[0]-i*recipe1[0]-j*recipe2[0]-k*recipe3[0], ing[1]-i*recipe1[1]-j*recipe2[1]-k*recipe3[1], ing[2]-i*recipe1[2]-j*recipe2[2]-k*recipe3[2], ing[3]-j*recipe2[3]-k*recipe3[3], ing[4]-i*recipe1[4]-k*recipe3[4], ing[5]);
                             const coins = i*14 + j*22 + k*35 + l*50
                             if (coins > max_coins) { // より良い組み合わせが見つかったので更新
                                 max_coins = coins;
                                 max_counts = [i, j, k, l];
-                                final_ingredients = ingredients;
+                                final_ingredients = ing;
                             }
                         }
                     }
