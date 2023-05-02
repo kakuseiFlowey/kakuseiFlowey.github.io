@@ -8,12 +8,6 @@
 
         <h1>Elevenのハンバーガー屋さん攻略</h1>
 
-        <!--
-        1. ボタンを押す -> ok
-        2. input に入力された材料の値を取得する -> ok
-        3. 最適解を求める -> ok
-        4. 出力する
-        -->
         <!-- 
         EX. 便利ボタンを作る
             - +1, -1, +5, -5 ボタン（個別、一括）
@@ -57,7 +51,7 @@
 			<button class="btn" id="make_button">ハンバーガーを作る</button>
 		</p>
 
-        <h3>最適解</h3>
+        <h2>最適解</h2>
         <ul id="result">
             <!-- ここに子要素を表示 -->
         </ul>
@@ -86,7 +80,6 @@
 
             const MAX_INGREDIENTS_SUM = 12 * 25 + 3 + 6; // 与えられる最大材料数の合計（開催期間*12個 + シークレットミッション）
             const ingredients = [52,37,41,20,27,13]; // 材料の数 [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン]
-            // const ingredients = [200,0,0,0,0,10];
             const recipe1 = [1,1,1,0,0,0]; // ハンバーガー
             const recipe2 = [1,1,1,1,0,0]; // チーズバーガー
             const recipe3 = [1,1,2,1,1,0]; // ダブルパティバーガー
@@ -107,9 +100,6 @@
             let max_counts = [0,0,0,0];
             let final_ingredients = Array.from(ingredients);
     
-            // solveFunc(ingredients); // 交換しないのが最適なこともある
-            // recursiveFunc(ingredients); // 交換して最適な組み合わせを探す
-
 
             /* 関数定義 */
 
@@ -166,15 +156,14 @@
                     parent.removeChild(parent.firstChild);
                 }
                 let elem = [];
-                for (let i = 0; i < 6; i++) {
-                    elem.push(document.createElement("li"));
+                for (let i = 0; i < 5; i++) {
+                    elem.push(document.createElement("span"));
                 }
-                elem[0].textContent = "材料[" + ingredients + "]で作れるバーガーの組み合わせを全て調べました";
-                elem[1].textContent = (Date.now() - begin)/1000 + "秒かかりました";
-                elem[2].textContent = "最大で" + max_coins + "コイン獲得できます。";
-                elem[3].textContent = "1. 材料交換しましょう: [パン、チーズ、ビーフパティ、トマト、レタス、ベーコン] -> [" + final_ingredients + "]";
-                elem[4].textContent = "2. [ハンバーガー、チーズバーガー、ダブルパティバーガー、Elevenバーガー] を [" + max_counts + "] 回ずつ作成しましょう";
-                elem[5].textContent = "余った材料はElevenとスタッフが美味しくいただきました。";
+                elem[0].innerHTML = "経過時間： <span class='info'>" + (Date.now() - begin)/1000 + "</span> 秒";
+                elem[1].innerHTML = "最大で <span class='important'>" + max_coins + "コイン</span> 獲得できます";
+                elem[2].innerHTML = '<table><caption>交換後の材料セット</caption><tr><th>パン</th><th>チーズ</th><th>ビーフパティ</th><th>トマト</th><th>レタス</th><th>ベーコン</th></tr>' + '<tr><td>' + final_ingredients[0] + '</td><td>' + final_ingredients[1] + '</td><td>' + final_ingredients[2] + '</td><td>' + final_ingredients[3] + '</td><td>' + final_ingredients[4] + '</td><td>' + final_ingredients[5] + '</td></tr></table>';
+                elem[3].innerHTML = '<span class="triangle-down"></span>';
+                elem[4].innerHTML = '<table><caption>作るハンバーガー数</caption><tr><th>ハンバーガー</th><th>チーズバーガー</th><th>ダブルパティバーガー</th><th>Elevenバーガー</th></tr>' + '<tr><td>' + max_counts[0] + '</td><td>' + max_counts[1] + '</td><td>' + max_counts[2] + '</td><td>' + max_counts[3] + '</td></tr></table>';
                 for (let element of elem) {
                     parent.appendChild(element);
                 }
